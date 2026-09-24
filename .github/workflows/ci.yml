@@ -25,7 +25,8 @@ jobs:
 
       - name: actualizar README
         if: ${{ github.event_name == 'pull_request' }}
-        run: echo "Añadida feature: ${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" >> README.md
+        run: |
+          echo "Añadida feature: ${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" >> README.md
 
       - name: Commit y push
         if: ${{ github.event_name == 'pull_request' }}
