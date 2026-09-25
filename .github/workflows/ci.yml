@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [opened, synchronize, reopened]
+
+  push:
+    branches:
+      - develop
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4  
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: actualizar README
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "Añadida feature: ${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" >> README.md
+
+      - name: Commit y push
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Actualizar README [skip ci]"
+          git push
+
+  validate-dev:
+    needs: update-readme
+    runs-on: self-hosted  
+    steps:
+      - name: Comparar DEV_TOKEN con LOCAL_DEV_TOKEN
+        env:
+          SECRET_DEV_TOKEN: ${{ secrets.DEV_TOKEN }}
+        run: |
+          if [ "$SECRET_DEV_TOKEN" = "$LOCAL_DEV_TOKEN" ]; then
+            echo "Los tokens coinciden ✅"
+          else
+            echo "Los tokens no coinciden ❌"
+            exit 1
+          fi    
