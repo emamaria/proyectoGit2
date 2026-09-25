@@ -9,3 +9,4 @@ Añadida feature: feature/nombre
 AppVersion-2 - 2026-09-25 17:24:59
 Añadida feature: feature/fix-cd-4
 AppVersion-3 - 2026-09-25 18:04:43
+Añadida feature: feature/estilo
