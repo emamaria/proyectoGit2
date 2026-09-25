@@ -26,6 +26,7 @@ jobs:
           token: ${{ secrets.PAT_OWNER }}
       
       - name: Incrementar versión
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           VERSION=$(grep -oE '^AppVersion-[0-9]+' README.md | tail -1 | grep -oE '[0-9]+$')
           NEW_VERSION=$((VERSION + 1))
@@ -34,6 +35,7 @@ jobs:
           echo "AppVersion-$NEW_VERSION - $DATE" >> README.md
 
       - name: Commit y push
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
